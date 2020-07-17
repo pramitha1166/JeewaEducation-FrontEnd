@@ -1,139 +1,129 @@
-/*
-	Transitive by TEMPLATED
-	templated.co @templatedco
-	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
-*/
+;
+(function ($) {
+    "use strict";
+    jQuery(document).ready(function () {
 
-(function($) {
+        // == AOS Init== //
+        AOS.init({
+            disable: 'mobile'
+        });
 
-	skel.breakpoints({
-		xlarge:	'(max-width: 1680px)',
-		large:	'(max-width: 1280px)',
-		medium:	'(max-width: 980px)',
-		small:	'(max-width: 736px)',
-		xsmall:	'(max-width: 480px)'
-	});
+        // == Search Bar== //
+        if ($('.search-icon').length) {
+            $('.search-icon').on('click', function () {
+                $('.search-form').toggleClass('show');
+            });
+        }
 
-	$(function() {
+        // == Hero Slider== //
+        if ($('.hero-slider').length) {
+            var swiper = new Swiper('.hero-slider', {
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: true,
+                },
+                speed: 900,
+                loop: true,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                navigation: {
+                    nextEl: '.arr-right',
+                    prevEl: '.arr-left',
+                },
+                on: {
+                    slideChangeTransitionStart: function () {
+                        $('.slide-content h1, .slide-content p, .slide-content a').removeClass('aos-init').removeClass('aos-animate');
+                    },
+                    slideChangeTransitionEnd: function () {
+                        AOS.init();
+                    },
+                },
+            });
 
-		var	$window = $(window),
-			$body = $('body'),
-			$header = $('#header'),
-			$banner = $('#banner');
+            $(".hero-slider").hover(function () {
+                (this).swiper.autoplay.stop();
+            }, function () {
+                (this).swiper.autoplay.start();
+            });
+        }
 
-		// Disable animations/transitions until the page has loaded.
-			$body.addClass('is-loading');
+        // == Testimonial Slider== //
+        if ($('.test-slider').length) {
+            var swiper = new Swiper('.test-slider', {
+                autoplay: {
+                    delay: 2500,
+                    disableOnInteraction: true,
+                },
+                speed: 1200,
+                loop: true,
+                pagination: {
+                    el: '.test-pagination',
+                    clickable: true
+                },
+                on: {
+                    slideChangeTransitionStart: function () {
+                        $('.testimonials .test-img, .testimonials h5, .testimonials span, .testimonials p').removeClass('aos-init').removeClass('aos-animate');
+                    },
+                    slideChangeTransitionEnd: function () {
+                        AOS.init();
+                    },
+                },
+            });
 
-			$window.on('load', function() {
-				window.setTimeout(function() {
-					$body.removeClass('is-loading');
-				}, 100);
-			});
+            $(".test-slider").hover(function () {
+                (this).swiper.autoplay.stop();
+            }, function () {
+                (this).swiper.autoplay.start();
+            });
+        }
 
-		// Prioritize "important" elements on medium.
-			skel.on('+medium -medium', function() {
-				$.prioritize(
-					'.important\\28 medium\\29',
-					skel.breakpoint('medium').active
-				);
-			});
+        // == Clients Slider== //
+        if ($('.clients-slider').length) {
+            var swiper = new Swiper('.clients-slider', {
+                autoplay: {
+                    delay: 2500,
+                    disableOnInteraction: true,
+                },
+                speed: 900,
+                loop: true,
+                slidesPerView: 5,
+                breakpoints: {
+                    1200: {
+                        slidesPerView: 4
+                    },
+                    992: {
+                        slidesPerView: 3
+                    },
+                    576: {
+                        slidesPerView: 2
+                    },
+                    400: {
+                        slidesPerView: 1
+                    }
+                }
+            });
 
-		// Fix: Placeholder polyfill.
-			$('form').placeholder();
+            $(".clients-slider").hover(function () {
+                (this).swiper.autoplay.stop();
+            }, function () {
+                (this).swiper.autoplay.start();
+            });
+        }
 
-		// Header.
-			if (skel.vars.IEVersion < 9)
-				$header.removeClass('alt');
+        // == Light Gallery== //
+        if ($('#lightgallery').length) {
+            $("#lightgallery").lightGallery();
+        }
+    });
 
-			if ($banner.length > 0
-			&&	$header.hasClass('alt')) {
+    jQuery(window).on('load', function () {
+        // == Animate loader off screen == //
+        $(".css-loader").fadeOut("slow");
+        AOS.init({
+            disable: 'mobile'
+        });
 
-				$window.on('resize', function() { $window.trigger('scroll'); });
-
-				$banner.scrollex({
-					bottom:		$header.outerHeight(),
-					terminate:	function() { $header.removeClass('alt'); },
-					enter:		function() { $header.addClass('alt'); },
-					leave:		function() { $header.removeClass('alt'); $header.addClass('reveal'); }
-				});
-
-			}
-
-		// Banner.
-
-			if ($banner.length > 0) {
-
-				// IE fix.
-					if (skel.vars.IEVersion < 12) {
-
-						$window.on('resize', function() {
-
-							var wh = $window.height() * 0.60,
-								bh = $banner.height();
-
-							$banner.css('height', 'auto');
-
-							window.setTimeout(function() {
-
-								if (bh < wh)
-									$banner.css('height', wh + 'px');
-
-							}, 0);
-
-						});
-
-						$window.on('load', function() {
-							$window.triggerHandler('resize');
-						});
-
-					}
-
-				// Video check.
-					var video = $banner.data('video');
-
-					if (video)
-						$window.on('load.banner', function() {
-
-							// Disable banner load event (so it doesn't fire again).
-								$window.off('load.banner');
-
-							// Append video if supported.
-								if (!skel.vars.mobile
-								&&	!skel.breakpoint('large').active
-								&&	skel.vars.IEVersion > 9)
-									$banner.append('<video autoplay loop><source src="' + video + '.mp4" type="video/mp4" /><source src="' + video + '.webm" type="video/webm" /></video>');
-
-						});
-
-				// More button.
-					$banner.find('.more')
-						.addClass('scrolly');
-
-			}
-
-		// Scrolly.
-			if ( $( ".scrolly" ).length ) {
-
-				var $height = $('#header').height() * 0.95;
-
-				$('.scrolly').scrolly({
-					offset: $height
-				});
-			}
-
-		// Menu.
-			$('#menu')
-				.append('<a href="#menu" class="close"></a>')
-				.appendTo($body)
-				.panel({
-					delay: 500,
-					hideOnClick: true,
-					hideOnSwipe: true,
-					resetScroll: true,
-					resetForms: true,
-					side: 'right'
-				});
-
-	});
-
-})(jQuery);
+    });
+})(jQuery)
