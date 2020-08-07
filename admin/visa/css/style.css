@@ -1,0 +1,20 @@
+body {
+    padding-bottom: 20px;
+  }
+  
+  .navbar {
+    margin-bottom: 20px;
+  }
+
+  nav {
+    color: white;
+  }
+  .form-container {
+    /* box-shadow: 0 0 4px #0000002b; */
+    padding: 29px;
+    box-shadow: 0 0 13px 5px #0000000f;
+}
+
+.form-control {
+  margin-bottom: inherit;
+}
